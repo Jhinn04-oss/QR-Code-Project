@@ -5,9 +5,10 @@ import java.sql.DriverManager;
 
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/attendance_db";
-    private static final String USER = "root";
-    private static final String PASSWORD = "09919230107_Redy";
+    // Replace the placeholders below with the credentials from your Aiven dashboard
+    private static final String URL = "jdbc:mysql://YOUR_AIVEN_HOST:YOUR_AIVEN_PORT/defaultdb?sslmode=require";
+    private static final String USER = "YOUR_AIVEN_USER"; // Usually "avnadmin"
+    private static final String PASSWORD = "YOUR_AIVEN_PASSWORD";
 
     public static Connection getConnection() {
 
