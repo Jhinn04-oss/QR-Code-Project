@@ -1,0 +1,77 @@
+body{
+
+    background:#f5f7fb;
+
+    font-family:Segoe UI,sans-serif;
+
+}
+
+.scanner-wrapper{
+
+    max-width:700px;
+
+    margin:auto;
+
+    text-align:center;
+
+    padding-top:50px;
+
+}
+
+.scanner-title{
+
+    font-size:55px;
+
+    font-weight:700;
+
+    color:#1e293b;
+
+}
+
+.scanner-subtitle{
+
+    color:#64748b;
+
+    margin-bottom:30px;
+
+}
+
+.scanner-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:
+            0 10px 30px rgba(0,0,0,.1);
+
+}
+
+#reader{
+
+    width:100%;
+
+}
+
+.status-card{
+
+    margin-top:25px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    box-shadow:
+            0 5px 15px rgba(0,0,0,.08);
+
+    font-size:20px;
+
+    color:#2563eb;
+
+    font-weight:600;
+
+}
