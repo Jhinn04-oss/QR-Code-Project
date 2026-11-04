@@ -60,6 +60,8 @@
         <li>MySQL</li>
         <li>NGROK</li>
         <li>Bootstrap 5</li>
+        <li>GitHub</li>
+        <li>Render</li>
 
       </ul>
 
