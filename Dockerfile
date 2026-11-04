@@ -1,11 +1,11 @@
-# Use an official Tomcat image with Java
+# Stage 1: Build the Maven application inside the cloud environment
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package
+
+# Stage 2: Deploy the compiled WAR file into Apache Tomcat
 FROM tomcat:10-jdk17-openjdk-slim
-
-# Remove the default Tomcat webapps so your project becomes the main page
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
-
-# Copy your built target war file into Tomcat's deployment folder as ROOT.war
-COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
-
-# Expose Tomcat's default web port
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
