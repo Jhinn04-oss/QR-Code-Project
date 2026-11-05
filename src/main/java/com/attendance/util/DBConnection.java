@@ -1,3 +1,4 @@
+
 package com.attendance.util;
 
 import java.sql.Connection;
@@ -7,6 +8,7 @@ import java.sql.SQLException;
 public class DBConnection {
 
     public static Connection getConnection() {
+
         String url = System.getenv("DB_URL");
         String user = System.getenv("DB_USER");
         String password = System.getenv("DB_PASSWORD");
@@ -14,18 +16,23 @@ public class DBConnection {
         if (url == null || url.isBlank()
                 || user == null || user.isBlank()
                 || password == null || password.isBlank()) {
+
             System.err.println(
-                "Database configuration is missing. Check DB_URL, DB_USER, and DB_PASSWORD."
+                    "Database configuration missing. Check DB_URL, DB_USER, DB_PASSWORD."
             );
+
             return null;
         }
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(url, user, password);
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Could not connect to the database:");
+
+        } catch (SQLException e) {
+
+            System.err.println("Database connection failed:");
+            System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
+
             return null;
         }
     }
