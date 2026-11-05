@@ -36,7 +36,7 @@ public class RegisterStudentServlet extends HttpServlet {
         File uploadDir = new File(uploadPath);
 
         if (!uploadDir.exists()) {
-            uploadDir.mkdir();
+            uploadDir.mkdirs();
         }
 
         filePart.write(uploadPath + File.separator + fileName);
@@ -63,6 +63,15 @@ public class RegisterStudentServlet extends HttpServlet {
                         + studentId;
 
         System.out.println("QR TEXT = " + qrText);
+
+        File qrDir = new File(
+                getServletContext().getRealPath("") +
+                        File.separator + "qrcodes"
+        );
+
+        if (!qrDir.exists()) {
+            qrDir.mkdirs();
+        }
 
         QRGenerator.generateQRCode(qrText, qrPath);
 
