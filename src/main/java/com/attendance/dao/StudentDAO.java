@@ -1,11 +1,10 @@
+
 package com.attendance.dao;
 
 import com.attendance.model.Student;
 import com.attendance.util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,32 +13,43 @@ public class StudentDAO {
     // Register Student
     public boolean registerStudent(Student student) {
 
-        try {
+        String sql = "INSERT INTO students " +
+                "(student_id, full_name, strand, section, photo, qr_code) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
-            Connection con = DBConnection.getConnection();
+        try (Connection con = DBConnection.getConnection()) {
 
-            String sql = "INSERT INTO students(student_id, full_name, strand, section, photo, qr_code) VALUES (?,?,?,?,?,?)";
+            if (con == null) {
+                System.out.println("ERROR: Database connection is NULL.");
+                return false;
+            }
 
-            PreparedStatement ps = con.prepareStatement(sql);
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, student.getStudentId());
-            ps.setString(2, student.getFullName());
-            ps.setString(3, student.getStrand());
-            ps.setString(4, student.getSection());
-            ps.setString(5, student.getPhoto());
-            ps.setString(6, student.getQrCode());
+                ps.setString(1, student.getStudentId());
+                ps.setString(2, student.getFullName());
+                ps.setString(3, student.getStrand());
+                ps.setString(4, student.getSection());
+                ps.setString(5, student.getPhoto());
+                ps.setString(6, student.getQrCode());
 
-            return ps.executeUpdate() > 0;
+                int rows = ps.executeUpdate();
 
-        } catch (Exception e) {
+                System.out.println("Registration affected rows: " + rows);
+
+                return rows > 0;
+            }
+
+        } catch (SQLException e) {
 
             System.out.println("========== DATABASE ERROR ==========");
+            System.out.println("SQL State: " + e.getSQLState());
+            System.out.println("Error Code: " + e.getErrorCode());
             e.printStackTrace();
             System.out.println("====================================");
 
+            return false;
         }
-
-        return false;
     }
 
     // Get All Students
@@ -47,31 +57,34 @@ public class StudentDAO {
 
         List<Student> students = new ArrayList<>();
 
-        try {
+        String sql = "SELECT * FROM students ORDER BY student_id";
 
-            Connection con = DBConnection.getConnection();
+        try (Connection con = DBConnection.getConnection()) {
 
-            String sql = "SELECT * FROM students ORDER BY student_id";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-
-                Student student = new Student();
-
-                student.setStudentId(rs.getString("student_id"));
-                student.setFullName(rs.getString("full_name"));
-                student.setStrand(rs.getString("strand"));
-                student.setSection(rs.getString("section"));
-                student.setPhoto(rs.getString("photo"));
-                student.setQrCode(rs.getString("qr_code"));
-
-                students.add(student);
+            if (con == null) {
+                System.out.println("Database connection is NULL.");
+                return students;
             }
 
-        } catch (Exception e) {
+            try (PreparedStatement ps = con.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Student student = new Student();
+
+                    student.setStudentId(rs.getString("student_id"));
+                    student.setFullName(rs.getString("full_name"));
+                    student.setStrand(rs.getString("strand"));
+                    student.setSection(rs.getString("section"));
+                    student.setPhoto(rs.getString("photo"));
+                    student.setQrCode(rs.getString("qr_code"));
+
+                    students.add(student);
+                }
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -83,36 +96,39 @@ public class StudentDAO {
 
         Student student = null;
 
-        try {
+        String sql = "SELECT * FROM students WHERE student_id = ?";
 
-            Connection con = DBConnection.getConnection();
+        try (Connection con = DBConnection.getConnection()) {
 
-            String sql = "SELECT * FROM students WHERE student_id = ?";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, studentId);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                student = new Student();
-
-                student.setStudentId(rs.getString("student_id"));
-                student.setFullName(rs.getString("full_name"));
-                student.setStrand(rs.getString("strand"));
-                student.setSection(rs.getString("section"));
-                student.setPhoto(rs.getString("photo"));
-                student.setQrCode(rs.getString("qr_code"));
-
+            if (con == null) {
+                System.out.println("Database connection is NULL.");
+                return null;
             }
 
-        } catch (Exception e) {
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+
+                ps.setString(1, studentId);
+
+                try (ResultSet rs = ps.executeQuery()) {
+
+                    if (rs.next()) {
+
+                        student = new Student();
+
+                        student.setStudentId(rs.getString("student_id"));
+                        student.setFullName(rs.getString("full_name"));
+                        student.setStrand(rs.getString("strand"));
+                        student.setSection(rs.getString("section"));
+                        student.setPhoto(rs.getString("photo"));
+                        student.setQrCode(rs.getString("qr_code"));
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return student;
     }
-
 }
